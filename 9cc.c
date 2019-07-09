@@ -1,10 +1,12 @@
+#include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
 
+void error(char *fmt, ...);
+
 int main(int argc, char **argv) {
     if (argc != 2) {
-        fprintf(stderr, "引数の個数が正しくありません。");
-        return EXIT_FAILURE;
+        error("引数の個数が正しくありません。");
     }
 
     char *p = argv[1];
@@ -27,11 +29,18 @@ int main(int argc, char **argv) {
             continue;
         }
 
-        fprintf(stderr, "予期しない文字です：'%c'\n", *p);
-        return EXIT_FAILURE;
+        error("予期しない文字です：'%c'\n", *p);
     }
 
     printf("    ret\n");
 
     return EXIT_SUCCESS;
+}
+
+void error(char *fmt, ...) {
+    va_list ap;
+    va_start(ap, fmt);
+    vfprintf(stderr, fmt, ap);
+    fprintf(stderr, "\n");
+    exit(EXIT_FAILURE);
 }
